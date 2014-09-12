@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+
+if [ -z "$DOCKER_UID" -o -z "$DOCKER_GID" ]; then
+    USER="root"
+else
+    USER="dummy"
+    HOME="/home/$USER"
+    usermod -u $DOCKER_UID $USER
+    groupmod -g $DOCKER_GID $USER
+fi
+
+if [ -n "$DOCKER_SSH" ]; then
+    mkdir --parent $HOME/.ssh
+    test -e $DOCKER_SSH/id_rsa && cp $DOCKER_SSH/id_rsa $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa
+    test -e $DOCKER_SSH/known_hosts && cp $DOCKER_SSH/known_hosts $HOME/.ssh/known_hosts
+    chown $USER:$USER $HOME/.ssh/ -R
+fi
+
+sudo -u $USER "$@"
+exit 0
