@@ -17,4 +17,8 @@ RUN echo "date.timezone = Europe/Paris" >> /etc/hhvm/php.ini
 # install composer
 RUN wget -O /usr/local/bin/composer -q http://getcomposer.org/composer.phar
 
+COPY runashost /usr/local/bin/runashost
+
 WORKDIR /srv
+CMD ["hhvm", "/usr/local/bin/composer"]
+ENTRYPOINT ["runashost"]

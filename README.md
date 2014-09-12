@@ -7,8 +7,16 @@ So instead of running
 
     $ composer install
 
-You can run 
+You can run
 
-    $ docker run -ti -v `pwd`:/srv marmelab/composer-hhvm bash -c 'hhvm /usr/local/bin/composer install'
+    $ docker run -ti -v `pwd`:/srv marmelab/composer-hhvm hhvm /usr/local/bin/composer install
+    $ #or more simply
+    $ docker run -ti -v `pwd`:/srv marmelab/composer-hhvm install
 
-The entrypoint is voluntarily omitted to ease user manipulation in the container in order to have composer generate files with the correct user rights.
+To generate files with the correct user rights inject the userId and groupId in container's environment variable
+
+    $ docker run -ti -e DOCKER_UID=`id -u` -e DOCKER_GID=`id -g` -v `pwd`:/srv marmelab/composer-hhvm install
+
+For using your ssh key, mount your ssh folder and indicate the mount point throught environnement variable
+
+    $ docker run -ti -e DOCKER_SSH=/tmp/ssh -v `pwd`:/srv -v ~/.ssh:/tmp/ssh marmelab/composer-hhvm install
