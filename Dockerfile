@@ -17,6 +17,11 @@ RUN echo "date.timezone = Europe/Paris" >> /etc/hhvm/php.ini
 # install composer
 RUN wget -O /usr/local/bin/composer -q http://getcomposer.org/composer.phar
 
+RUN groupadd -f dummy
+RUN useradd -g dummy dummy
+RUN mkdir --parent '/home/dummy/.ssh'
+RUN chown dummy:dummy /home/dummy -R
+
 COPY runashost /usr/local/bin/runashost
 
 WORKDIR /srv
