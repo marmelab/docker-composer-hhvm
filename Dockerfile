@@ -1,20 +1,23 @@
 # composer image
 # runs composer within a container
 FROM ubuntu:14.04
-MAINTAINER François Zaninotto <francois+docker@marmelab.com>
+MAINTAINER François Zaninotto <francois+docker@marmelab.com>, Simon Dittlmann
 
 ENV HOME /root
 
-RUN apt-get update -qq
-RUN apt-get install -y -qq git curl wget
+RUN apt-get update -qq && \
+	apt-get install -y -qq git curl && \
+	apt-get -y clean
 
 # install HHVM
-RUN wget -O - http://dl.hhvm.com/conf/hhvm.gpg.key | apt-key add -
-RUN echo deb http://dl.hhvm.com/ubuntu trusty main | tee /etc/apt/sources.list.d/hhvm.list
-RUN apt-get update -qq && apt-get install -y -qq hhvm
-RUN echo "date.timezone = Europe/Paris" >> /etc/hhvm/php.ini
+RUN curl -s http://dl.hhvm.com/conf/hhvm.gpg.key | apt-key add - && \
+	echo deb http://dl.hhvm.com/ubuntu trusty main | tee /etc/apt/sources.list.d/hhvm.list && \
+	apt-get update -qq && \
+	apt-get install -y -qq hhvm && \
+	apt-get -y clean
+RUN echo "date.timezone = Europe/Berlin" >> /etc/hhvm/php.ini
 
 # install composer
-RUN wget -O /usr/local/bin/composer -q http://getcomposer.org/composer.phar
+RUN curl -sS https://getcomposer.org/installer | php -- --filename=composer --install-dir=/usr/local/bin
 
 WORKDIR /srv
